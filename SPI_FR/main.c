@@ -9,8 +9,8 @@
 #define P2_5_BIT BIT6 // MISO pin for SPI communication
 
 void spi_init() {
-  UCB0CTL1 |= UCSWRST;                              // Put SPI module in reset state
-  UCB0CTL0 |= UCCKPH | UCMSB | UCMST | UCSYNC;      // Configure SPI mode
+  UCB0CTL1 |= UCSWRST;                              // Disable Serial Interface
+  UCB0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;      // Configure SPI mode
   UCB0CTL1 |= UCSSEL_2;                             // Select SMCLK as clock source
   UCB0BR0 = 0x02;                                   // Set clock divider to 2
   UCB0BR1 = 0x00;
@@ -30,7 +30,7 @@ uint16_t spi_read() {
   return data;
 }
 
-int value = 0;
+
 int main(void) {
   WDTCTL = WDTPW | WDTHOLD;         // Stop watchdog timer
   P2SEL0 |= P2_4_BIT | P2_5_BIT;     // Set P2.4 and P2.5 as SPI pins
@@ -40,9 +40,12 @@ int main(void) {
   P2OUT |= P2_1_CS;                // Set CS pin high to start with
   spi_init();                       // Initialize SPI module
 
+  int value = 0;
   while (1) {
     uint16_t data = spi_read();     // Read data from PmodALS
     // Process data here
-    value = data;
+    if(data != 0)
+        value = data;
   }
 }
+
