@@ -8,32 +8,32 @@
 
 void uart_init() {
 
-    UCA1CTLW0 |= UCSWRST; // Put the UART module in reset mode
-    UCA1CTLW0 |= UCSSEL__SMCLK; // Set the clock source to SMCLK
-    UCA1BRW = 8; // Set the baud rate
-    UCA1MCTLW = 0xD600; // Set the modulation
+    UCA0CTLW0 |= UCSWRST; // Put the UART module in reset mode
+    UCA0CTLW0 |= UCSSEL__SMCLK; // Set the clock source to SMCLK
+    UCA0BRW = 8; // Set the baud rate
+    UCA0MCTLW = 0xD600; // Set the modulation
 
     //PM5CTL0 &= ~LOCKLPM5;
-    P1SEL1 &= ~BIT4;
-    P1SEL0 &= BIT4;
+    P1SEL1 &= ~BIT5;
+    P1SEL0 &= BIT5;
 
-    UCA1CTLW0 &= ~UCSWRST; // Take the UART module out of reset mode
+    UCA0CTLW0 &= ~UCSWRST; // Take the UART module out of reset mode
 
 }
 
 int main(void)
 {
-	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-	
-	uart_init();
+    WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
-	int i;
-	while(1) {
+    uart_init();
 
-	    UCA1TXBUF = 0x69;
-	    for(i = 0; i<10000; i++){}
+    int i;
+    while(1) {
 
-	}
+        UCA0TXBUF = 0x69;
+        for(i = 0; i<10000; i++){}
 
-	return 0;
+    }
+
+    return 0;
 }
