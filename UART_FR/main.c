@@ -8,11 +8,16 @@
 
 void uart_init() {
 
-    UCA0CTLW0 = UCSWRST; // Put the UART module in reset mode
-    UCA0CTLW0 |= UCSSEL__SMCLK; // Set the clock source to SMCLK
-    UCA0BRW = UART_CLK/BAUDRATE; // Set the baud rate
-    UCA0MCTLW = UCBRF_0 | 0x01 | UCOS16; // Set the modulation
-    UCA0CTLW0 &= ~UCSWRST; // Take the UART module out of reset mode
+    UCA1CTLW0 |= UCSWRST; // Put the UART module in reset mode
+    UCA1CTLW0 |= UCSSEL__SMCLK; // Set the clock source to SMCLK
+    UCA1BRW = 8; // Set the baud rate
+    UCA1MCTLW = 0xD600; // Set the modulation
+
+    //PM5CTL0 &= ~LOCKLPM5;
+    P1SEL1 &= ~BIT4;
+    P1SEL0 &= BIT4;
+
+    UCA1CTLW0 &= ~UCSWRST; // Take the UART module out of reset mode
 
 }
 
@@ -21,20 +26,12 @@ int main(void)
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
 	
 	uart_init();
-	//printf("Hello\r\n");
 
+	int i;
 	while(1) {
 
-	    int i = 0;
-	    while(i <= 100) {
-	        printf(i);
-	        //i++;
-	    }
-
-	    while(i >= 0) {
-            printf(i);
-            //i--;
-        }
+	    UCA1TXBUF = 0x69;
+	    for(i = 0; i<10000; i++){}
 
 	}
 
