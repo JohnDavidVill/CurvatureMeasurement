@@ -4,8 +4,8 @@
 
 %%% Initialization %%%
 
-BaudRate = 9600;                            % Specify RX Baudrate
-port = serialport("COM3", BaudRate);        % Init COM Port and BR
+BaudRate = 115200;                          % Specify RX Baudrate
+port = serialport("COM5", BaudRate);        % Init COM Port and BR
                                             % COM varies by machine and
                                             % will appear different on
                                             % different OSs. E.g. on Mac
@@ -13,16 +13,17 @@ port = serialport("COM3", BaudRate);        % Init COM Port and BR
 
 fopen(port);                                % Open the Port
 
-%%% Plotting Data %%%
+%%% Reading Data %%%
 
-elem = 1;
-while(1)
+configureTerminator(port, "CR");
 
-    read(elem) = str2double(fscanf(port));  % Read from the Port
+ while(1)
 
-    plot(elem);
+   message = readline(port);
+   
+   sensor = extractBetween(message, 1,1);
+   value = extractAfter(message, 2);
 
-    pause(0.01);
-    elem = elem+1;
+   disp(value);
 
 end
