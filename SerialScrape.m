@@ -15,15 +15,20 @@ fopen(port);                                % Open the Port
 
 %%% Reading Data %%%
 
-configureTerminator(port, "CR");
+configureTerminator(port, "CR");            % Terminator for the end of
+                                            % message
 
  while(1)
 
-   message = readline(port);
+   message = readline(port);                % Read from the port
    
-   sensor = extractBetween(message, 1,1);
-   value = extractAfter(message, 2);
+   sensor = extractBetween(message, 1,1);   % Extract which sensor the data
+                                            % is being fed from
+   value = str2double(extractAfter(message, 2));   
+                                            % Extract the value from the 
+                                            % sensor as a double
 
-   disp(value);
+   disp(value);                             % Display the value to the
+                                            % command window
 
 end
