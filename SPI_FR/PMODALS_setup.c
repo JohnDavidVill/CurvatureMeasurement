@@ -8,6 +8,7 @@
 #include "msp430fr2433.h"
 #include "PMODALS_setup.h"
 #include <stdint.h>
+#include <stdio.h>
 
 #define P2_4_BIT BIT4 // SCLK pin for SPI communication
 #define P2_5_BIT BIT6 // MISO pin for SPI communication
@@ -33,15 +34,15 @@ void write(uint8_t data) {
 
 void config_write_PMODALS(uint8_t config) {
 
-    write(PMODALS_CONFIG_REG);                      // Wait for transmit buffer to empty
-    write(config);                                  // Write to transmit buffer
+    write(PMODALS_CONFIG_REG);                      // Send command saying we want to write to register
+    write(config);                                  // Send configuration data
 
 }
 
 uint8_t read() {
 
     while(!(UCB0IFG & UCRXIFG));                    // Wait for receive buffer to be full
-    return UCB0RXBUF;                               // Read data from receive buffer
+    return UCB0RXBUF;                               // Read and return data from receive buffer
 
 }
 
@@ -56,4 +57,18 @@ uint16_t config_read_PMODALS() {
 
     return(data);
 
+}
+
+void uart_init() {
+
+    UCA0CTLW0 = UCSWRST;                            // Reset UART
+    UCA0CTLW0 |= UCSSEL__SMCLK;                     // Select SMCLK
+    UCA0BRW = 52;                                   // Set baud rate to 4800
+    UCA0MCTLW = UCA0BR0 | UCA0BR1;                // Set modulation UCBRSx=1, UCBRFx=0
+    UCA0CTLW0 &= ~UCSWRST;                          // Exit Reset Mode
+
+}
+
+void uart_print(int data) {
+    printf("AmbientA: %d\n", data);
 }

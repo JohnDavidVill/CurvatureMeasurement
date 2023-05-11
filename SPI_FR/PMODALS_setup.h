@@ -18,6 +18,7 @@ void write(uint8_t data);
 void config_write_PMODALS(uint8_t config);
 uint8_t read();
 uint16_t config_read_PMODALS();
-
+void uart_init();
+void uart_print(int data);
 
 #endif /* PMODALS_SETUP_H_ */

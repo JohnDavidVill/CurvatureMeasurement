@@ -14,15 +14,17 @@ int main(void) {
   P2OUT |= P2_1_CS;                 // Set CS pin high to start with
 
   spi_init();                       // Initialize SPI module
+  uart_init();                      // Initialize UART module
 
+  int funny = 69;
+  uart_print(funny);
   config_write_PMODALS(0x00);
 
   while(1) {
 
       uint16_t data = read();
 
-      printf("Ambient_A: %d\n", data);
-      __delay_cycles(1000);
+      uart_print(data);
 
   }
 
