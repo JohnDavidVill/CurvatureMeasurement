@@ -16,13 +16,16 @@ int main(void) {
   spi_init();                       // Initialize SPI module
   uart_init();                      // Initialize UART module
 
-  int funny = 69;
+  int funny = 0b11001100;
   uart_print(funny);
   config_write_PMODALS(0x00);
+  uint16_t try;
 
   while(1) {
 
       uint16_t data = read();
+
+      try = data;
 
       uart_print(data);
 

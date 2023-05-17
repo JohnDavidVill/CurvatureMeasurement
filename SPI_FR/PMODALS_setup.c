@@ -18,18 +18,18 @@ void spi_init() {
   P2SEL0 |= P2_4_BIT | P2_5_BIT;                    // Set P2.4 and P2.5 as SPI pins
   P2SEL1 |= P2_4_BIT | P2_5_BIT;
 
-  UCB0CTL1 |= UCSWRST;                              // Disable Serial Interface
-  UCB0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;      // Configure SPI mode
-  UCB0CTL1 |= UCSSEL_2;                             // Select SMCLK clock
-  UCB0BR0 = 0x02;                                   // Set Frequency
-  UCB0BR1 = 0x00;
-  UCB0CTL1 &= ~UCSWRST;                             // Initialize USCI State Machine
+  UCA0CTL1 |= UCSWRST;                              // Disable Serial Interface
+  UCA0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;      // Configure SPI mode
+  UCA0CTL1 |= UCSSEL_2;                             // Select SMCLK clock
+  UCA0BR0 = 0x02;                                   // Set Frequency
+  UCA0BR1 = 0x00;
+  UCA0CTL1 &= ~UCSWRST;                             // Initialize USCI State Machine
 
 }
 
 void write(uint8_t data) {
-    while(!(UCB0IFG & UCTXIFG));                    // Wait for transmit buffer to be empty
-    UCB0TXBUF = data;                               // Write data to transmit buffer
+    while(!(UCA0IFG & UCTXIFG));                    // Wait for transmit buffer to be empty
+    UCA0TXBUF = data;                               // Write data to transmit buffer
 }
 
 void config_write_PMODALS(uint8_t config) {
@@ -41,8 +41,8 @@ void config_write_PMODALS(uint8_t config) {
 
 uint8_t read() {
 
-    while(!(UCB0IFG & UCRXIFG));                    // Wait for receive buffer to be full
-    return UCB0RXBUF;                               // Read and return data from receive buffer
+    while(!(UCA0IFG & UCRXIFG));                    // Wait for receive buffer to be full
+    return UCA0RXBUF;                               // Read and return data from receive buffer
 
 }
 
