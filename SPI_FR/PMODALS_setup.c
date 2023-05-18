@@ -13,23 +13,30 @@
 #define P2_4_BIT BIT4 // SCLK pin for SPI communication
 #define P2_5_BIT BIT6 // MISO pin for SPI communication
 
+int i;
+
 void spi_init() {
 
   P2SEL0 |= P2_4_BIT | P2_5_BIT;                    // Set P2.4 and P2.5 as SPI pins
   P2SEL1 |= P2_4_BIT | P2_5_BIT;
 
-  UCA0CTL1 |= UCSWRST;                              // Disable Serial Interface
-  UCA0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;      // Configure SPI mode
-  UCA0CTL1 |= UCSSEL_2;                             // Select SMCLK clock
-  UCA0BR0 = 0x02;                                   // Set Frequency
-  UCA0BR1 = 0x00;
-  UCA0CTL1 &= ~UCSWRST;                             // Initialize USCI State Machine
+  UCB0CTL1 |= UCSWRST;                              // Disable Serial Interface
+  UCB0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;      // Configure SPI mode
+  UCB0CTL1 |= UCSSEL_2;                             // Select SMCLK clock
+  UCB0BR0 = 0x02;                                   // Set Frequency
+  UCB0BR1 = 0x00;
+  UCB0CTL1 &= ~UCSWRST;                             // Initialize USCI State Machine
 
 }
 
 void write(uint8_t data) {
-    while(!(UCA0IFG & UCTXIFG));                    // Wait for transmit buffer to be empty
-    UCA0TXBUF = data;                               // Write data to transmit buffer
+    while(!(UCB0IFG & UCTXIFG));                    // Wait for transmit buffer to be empty
+    UCB0TXBUF = data;                               // Write data to transmit buffer
+}
+
+void uart_send_byte(unsigned char data) { // Uses A0 instead.
+    while(!(UCA0IFG & UCTXIFG));                    // wait until TX buffer is empty
+    UCA0TXBUF = data;                               // write data to TX buffer
 }
 
 void config_write_PMODALS(uint8_t config) {
@@ -41,8 +48,8 @@ void config_write_PMODALS(uint8_t config) {
 
 uint8_t read() {
 
-    while(!(UCA0IFG & UCRXIFG));                    // Wait for receive buffer to be full
-    return UCA0RXBUF;                               // Read and return data from receive buffer
+    while(!(UCB0IFG & UCRXIFG));                    // Wait for receive buffer to be full
+    return UCB0RXBUF;                               // Read and return data from receive buffer
 
 }
 
@@ -71,4 +78,12 @@ void uart_init() {
 
 void uart_print(int data) {
     printf("AmbientA: %d\n", data);
+}
+
+void uart_send(int val) {
+    char str[10];
+    sprintf(str, "%d\n", val);
+    for(i=0; str[i]!='\0'; i++) {
+        uart_send_byte(str[i]); // send each character of the string over UART
+    }
 }

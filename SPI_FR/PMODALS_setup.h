@@ -15,10 +15,12 @@
 uint16_t spi_read();
 void spi_init();
 void write(uint8_t data);
+void uart_send_byte(unsigned char data);
 void config_write_PMODALS(uint8_t config);
 uint8_t read();
 uint16_t config_read_PMODALS();
 void uart_init();
 void uart_print(int data);
+void uart_send(int val);
 
 #endif /* PMODALS_SETUP_H_ */
