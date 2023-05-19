@@ -8,6 +8,8 @@ clc
 clear all
 close all
 
+d_height = 5;
+
 BaudRate = 115200;                          % Specify RX Baudrate
 port = serialport("COM5", BaudRate);        % Init COM Port and BR
                                             % COM varies by machine and
@@ -23,6 +25,9 @@ configureTerminator(port, "CR");            % Terminator for the end of
                                             % message
 
  elem_num = 0;
+ avalue = 256;
+ bvalue = 256;
+
  while(1)
 
    message = readline(port);                % Read from the port
@@ -32,9 +37,21 @@ configureTerminator(port, "CR");            % Terminator for the end of
    value = str2double(extractAfter(message, 2));   
                                             % Extract the value from the 
                                             % sensor as a double
+   
+   if(sensor == "A")
+        
+        avalue = value;
+
+  elseif(sensor == "B")
  
-   plot(elem_num, value, 'r.'); drawnow
+        bvalue = value;
+
+  end
+                                    
+   plot(elem_num, avalue, 'r.'); drawnow
    hold on
+   %plot(elem_num, bvalue, '--'); drawnow
+   %hold on
    elem_num = elem_num + 1;
 
 end
