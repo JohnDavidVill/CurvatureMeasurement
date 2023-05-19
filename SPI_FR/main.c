@@ -16,15 +16,15 @@ int main(void) {
   spi_init();                       // Initialize SPI module
   uart_init();                      // Initialize UART module
 
-  int funny = 69;
-  uart_print(funny);
+  int data = 0x1;
+  //uart_print(funny);
   config_write_PMODALS(0x00);
 
   while(1) {
 
-      uint16_t data = read();
+      //uint16_t data = read();
 
-      uart_send(data);
+      uart_tx(data);
 
       //int readout = data >> 4;
   }
