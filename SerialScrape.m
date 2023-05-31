@@ -29,8 +29,8 @@ configureTerminator(port, "CR");            % Terminator for the end of
                                             % message
 
  elem_num = 0;
- elem_a = 255;
- elem_b = 255;
+ d_time = 1;
+ time_flag = 1;
 
  while(1)
 
@@ -48,32 +48,28 @@ configureTerminator(port, "CR");            % Terminator for the end of
 
    if(value == threshold)                   % Find element numbers to calculate
                                             % time in a future calculation
-    if(elem_a == 255 && elem_b == 255)      % Find element for sensor A
-        elem_a = elem_num;
-    elseif(elem_a ~= 255 && elem_b == 255)  % Find element for sensor B
-        elem_b = elem_num;
+    if(time_flag == 1)                      % Start/Stop timer based on threshold
+        tic
+        time_flag = 0;
+    elseif(time_flag == 0)
+        d_time = toc;
         break
     end
 
    end
 
-   elem_num = elem_num + 1;
+   elem_num = elem_num + 1;                 % Iterate over loop
 
 end
 
 %%% Calculations %%%
-d_baud = elem_b - elem_a;                   % Find the difference in the
-                                            % element numbers. This is the
-                                            % difference in the amount of
-                                            % bauds between the two times
 
-d_time = d_baud * (1 / BaudRate);           % Calculate time based off of
-                                            % the difference in bauds and
-                                            % the baud rate
-
-c_const = 2*(86400 / 2*pi)^2;
+c_const = 2*(86400 / 2*pi)^2;               % Constant value in calculation                           
 c_height = (sqrt(d_height + height) - sqrt(height))^2;
+                                            % Height value in calculation
 
-radius = 2*c_const*c_height/(d_time^2);
+radius = 2*c_const*c_height/(d_time^2)/1000;% Radius calculation
 
-fprintf("The Radius of the Earth is %d m\n\r", radius);
+fprintf("The Radius of the Earth is %d km\n\r", radius);
+                                            % Print the result to the 
+                                            % Command Window
