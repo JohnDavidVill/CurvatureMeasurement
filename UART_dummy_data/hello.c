@@ -13,16 +13,16 @@ void main() {
 	for(int i = 255; i > 0; i--) {
 
 		printf("A%d\r\n", i);
-		for(int j = 0; j <= 1000000; j++);
+		for(int j = 0; j <= 100000; j++);
 
 	}
 
-	for(int j = 0; j <= 10000000; j++);
+	for(int j = 0; j <= 16000000; j++);
 
 	for(int i = 255; i > 0; i--) {
 
 		printf("B%d\r\n", i);
-		for(int j = 0; j <= 1000000; j++);
+		for(int j = 0; j <= 100000; j++);
 
 	}
 
