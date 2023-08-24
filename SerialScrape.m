@@ -11,21 +11,24 @@ close all
 d_height = 0.63;
 height = 0.52;
 
-BaudRate = 115200;                          % Specify RX Baudrate
-port = serialport("COM5", BaudRate);        % Init COM Port and BR
+BaudRate = 9600;                            % Specify RX Baudrate
+port = serialport("/dev/cu.usbmodem11103", BaudRate);        
+                                            % Init COM Port and BR
                                             % COM varies by machine and
                                             % will appear different on
                                             % different OSs. E.g. on Mac
                                             % it'll contain "usbmodem"
 
-fopen(port);                                % Open the Port
+%fopen(port);                                % Open the Port
 port.Timeout = 84600;
 
-threshold = 20;
+high_threshold = 30000;
+low_threshold = 10000;
+threshold_tolerance = 500;
 
 %%% Reading Data %%%
 
-configureTerminator(port, "CR");            % Terminator for the end of
+configureTerminator(port, "LF");            % Terminator for the end of
                                             % message
 
  elem_num = 0;
@@ -35,34 +38,31 @@ configureTerminator(port, "CR");            % Terminator for the end of
  while(1)
 
    message = readline(port);                % Read from the port
-   
-   sensor = extractBefore(message, 2);      % Extract which sensor the data
-                                            % is being fed from
-   value = str2double(extractAfter(message, 2));   
+ 
+   value = str2double(message);   
                                             % Extract the value from the 
                                             % sensor as a double
-
-                                   
+   disp(value)
    plot(elem_num, value, 'b.'); drawnow     % Draw the serial input plot
    hold on
 
-   if(value == threshold)                   % Find element numbers to calculate
-                                            % time in a future calculation
-    if(time_flag == 1)                      % Start/Stop timer based on threshold
-        tic
-        time_flag = 0;
-    elseif(time_flag == 0)
+   % Find element numbers to calculate time in a future calculation
+   % Start/Stop timer based on threshold
+   if(value <= high_threshold-threshold_tolerance && value >= high_threshold+threshold_tolerance)              
+      
+       if(time_flag == 1)
+          tic
+       end
+   elseif(value <= low_threshold)
         d_time = toc;
         break
-    end
-
    end
 
    elem_num = elem_num + 1;                 % Iterate over loop
 
-end
+ end
 
-%%% Calculations %%%
+ %%% Calculations %%%
 
 c_const = 2*(86400 / 2*pi)^2;               % Constant value in calculation                           
 c_height = (sqrt(d_height + height) - sqrt(height))^2;
