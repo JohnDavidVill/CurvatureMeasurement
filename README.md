@@ -1,7 +1,7 @@
 # Curvature Measurement
 The goal of this project is to measure the curvature of the Earth by calculating the radius of the Earth given simulation data.
 ## Code
-This repository contains four separate code sections. Two projects, SPI_FR and UART_FR, feature *Code Composer Studio Projects* of SPI and UART code attempted to be implemented with the sensors. *SerialScrape.m* is a MatLab file that collects sensor data or simulated data from a Serial Port and calculates the radius of the Earth as explained in **Calculations**. UART_dummy_data sends in sample UART data that simulates sensor data being fed in from the physical device.
+The primary project, to be built on the MSP430FR2433, can be found under the 0experimental folder. *SerialScrape.m* is a MatLab file that collects sensor data from the MSP430 running the project, via a Serial Port, and calculates the radius of the Earth as explained in **Calculations**. 
 
 ## Calculations
 The radius of the Earth can be found using the equation below.
