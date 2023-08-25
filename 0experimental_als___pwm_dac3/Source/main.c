@@ -33,8 +33,8 @@
 //  MSP430FR2433 Demo - I2C sensors for building automation
 //
 //  Description: this code example using FLL to stabilize the DCO at 16MHz.
-//  It Use MSP430 to communicate with 3 I2C sensors, including HDC2080, TMP117
-//  and OPT3001, through I2C.
+//  It uses MSP430 to communicate with the OPT3001 sensor using I2C,
+//  and sends its data to a computer through the USB port using UART.
 //
 //           MSP430FR2433
 //         ---------------
@@ -50,6 +50,9 @@
 //   Texas Instruments Inc.
 //   April 2021
 //   Built with IAR Embedded Workbench v7.10 & Code Composer Studio v10.1
+//
+//   Noemi Moreno, Jack Pearce, John Villarreal
+//   August 2023
 //******************************************************************************
 #include <msp430.h>
 #include <stdint.h>
@@ -66,11 +69,8 @@ void Software_Trim();                       // Software Trim to get the best DCO
 
 #define MCLK_FREQ_MHZ 1                     // MCLK = 1MHz
 /* global parameters */
-//uint16_t Opt3001Result;
 uint32_t Opt3001Result;
 uint32_t PrevOpt3001Result;
-int8_t Tmp117Result;
-uint8_t Hdc2080Result;
 
 static char cATXString[20];
 #define BASE 10
@@ -102,21 +102,21 @@ void itoa(uint32_t value, char* result)
 void TransmitChar(char character)
 {
     // Transmit Character
-    while (UCA0STATW & UCBUSY)   //@Wait while UCBUSY is flagged (= a transmit or receive operation is in progress, in UCA0)
+    while (UCA0STATW & UCBUSY)   //Wait while UCBUSY is flagged (= a transmit or receive operation is in progress, in UCA0)
         ;
-    while (!(UCA0IFG & UCTXIFG)) //@Wait till UCTXIFG (the Transmit Interrupt Flag) is flagged for UCA0
+    while (!(UCA0IFG & UCTXIFG)) //Wait till UCTXIFG (the Transmit Interrupt Flag) is flagged for UCA0
         ;
-    UCA0TXBUF = character;       //@Set UCA0's transmit buffer to the character
+    UCA0TXBUF = character;       //Set UCA0's transmit buffer to the character
 
-    while (UCA0STATW & UCBUSY)   //@Wait while UCBUSY is flagged (= a transmit or receive operation is in progress, in UCA0)
-        ;                        // (Presumably, this is waiting till the character we buffered is transmitted)
+    while (UCA0STATW & UCBUSY)   //Wait while UCBUSY is flagged (= a transmit or receive operation is in progress, in UCA0)
+        ;                        // (This is waiting till the character we buffered is transmitted)
 }
 
 void TransmitString(char *str)
 {
     uint16_t i;
 
-    for(i = 0; i < strlen(str); i++) //Seems to go till the terminal '\0' char of a string (which's just adjacent characters)
+    for(i = 0; i < strlen(str); i++)
     {
         if (str[i] != 0)
         {
@@ -145,27 +145,20 @@ int main(void)
     initUart();
 
     __bis_SR_register(GIE);  // Enable global interrupts
-
-    //Tmp117 default mode is continues mode
-    //Opt3001 and Hdc2080 default mode is shut down mode.
     opt3001Init();
 
     while(1)
     {
-        PrevOpt3001Result = Opt3001Result;
+        //PrevOpt3001Result = Opt3001Result;
         Opt3001Result =  getOpt3001LuxData();       //OPT3001 is in continues mode
-        //Tmp117Result =  getTmp117TemperatureData(); //Tmp117 is in continues mode
-        //Hdc2080Result = getHdc2080HumidityData(); //Hdc2080 is in trigger mode
         __no_operation(); // Add this and set a breakpoint here.
         _delay_cycles(100000); //delay 100ms
 
-        if (PrevOpt3001Result != Opt3001Result)
-        {
+        //if (PrevOpt3001Result != Opt3001Result)     //Uncomment to reduce 'spam' when testing.
+        //{
             SendUInt32(Opt3001Result);
             TransmitString("\n");
-        }
-        //Flashlight light sources couldn't seem to get the value above what 32bit could convey, btw.
-        //And of course we can compress it WAY better, but we're doing measurements through debug rn.
+        //}
     }
 
 }

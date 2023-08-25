@@ -125,34 +125,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-1experimental_als___pwm_dac3.out \
+0experimental_als___pwm_dac3.out \
 
 EXE_OUTPUTS__QUOTED += \
-"1experimental_als___pwm_dac3.out" \
+"0experimental_als___pwm_dac3.out" \
 
 BIN_OUTPUTS += \
-1experimental_als___pwm_dac3.hex \
+0experimental_als___pwm_dac3.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"1experimental_als___pwm_dac3.hex" \
+"0experimental_als___pwm_dac3.hex" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "1experimental_als___pwm_dac3.out" secondary-outputs
+	@$(MAKE) --no-print-directory -Onone "0experimental_als___pwm_dac3.out" secondary-outputs
 
 # Tool invocations
-1experimental_als___pwm_dac3.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+0experimental_als___pwm_dac3.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/cl430" -vmspx --use_hw_mpy=F5 --advice:power="none" --advice:hw_config=all --define=__MSP430FR2433__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"1experimental_als___pwm_dac3.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs1220/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1220/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib" -i"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="1experimental_als___pwm_dac3_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "1experimental_als___pwm_dac3.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/cl430" -vmspx --use_hw_mpy=F5 --advice:power="none" --advice:hw_config=all --define=__MSP430FR2433__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"0experimental_als___pwm_dac3.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs1220/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1220/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib" -i"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="0experimental_als___pwm_dac3_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "0experimental_als___pwm_dac3.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
-1experimental_als___pwm_dac3.hex: $(EXE_OUTPUTS)
+0experimental_als___pwm_dac3.hex: $(EXE_OUTPUTS)
 	@echo 'Building secondary target: "$@"'
 	@echo 'Invoking: MSP430 Hex Utility'
-	"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/hex430" --exclude=.eeprom --memwidth=8 --romwidth=8 --diag_wrap=off --intel -o "1experimental_als___pwm_dac3.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/hex430" --exclude=.eeprom --memwidth=8 --romwidth=8 --diag_wrap=off --intel -o "0experimental_als___pwm_dac3.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building secondary target: "$@"'
 	@echo ' '
 

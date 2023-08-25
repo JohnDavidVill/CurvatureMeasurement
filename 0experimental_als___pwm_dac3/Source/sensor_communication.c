@@ -16,15 +16,11 @@
 #define CMD_TYPE_1_MASTER      4
 #define CMD_TYPE_2_MASTER      5
 
-#define TMP117_LENGTH    2
 #define OPT3001_LENGTH   2
-#define HDC2080_LENGTH   1
 
 #define EXP_MASK 15
 
 extern uint8_t Opt3001SlaveBuffer[OPT3001_LENGTH] = {0};
-extern uint8_t TMP117SlaveBuffer[TMP117_LENGTH] = {0};
-extern uint8_t HDC2080SlaveBuffer[HDC2080_LENGTH] = {0};
 
 //******************************************************************************
 // Use to get the Opt3001 Lux data *********************************************
@@ -63,17 +59,12 @@ void opt3001Init()
 
     //BIT11 means the conversion time field is 800ms rather than 100ms, slower but more accurate.
 
-    //BIT10 and BIT9 being 1 means Continuous Conversions are on, read more about alternatives (singleshot etc) later. ##TODO
+    //BIT10 and BIT9 being 1 means Continuous Conversions are on.
 
     //BIT0 being 1 means *two* (rather than 1, default) concecutive *fault events*
-    //     are required to trigger the interrupt reporting mechanisms (explained in doc). INT pin, flag high/flag low fields ##TODO read those
-
-
-    //I think it's better to only deconvert the Lux once it's in Python territory, either that or expand the ints usable for it.
-    //Currently it seems to overflow easily with the 65535 max. Try expanding the usable ints first? To test before Python.
+    //are required to trigger the interrupt reporting mechanisms (explained in doc). INT pin, flag high/flag low fields
 }
 uint32_t getOpt3001LuxData(void)
-
 {
     uint32_t luxData;
     uint32_t quadResult;
@@ -90,48 +81,4 @@ uint32_t getOpt3001LuxData(void)
     //y = buffer[0] * 2^8  + buffer[1] -- suspect this is just decimal format
 
     return luxData;
-}
-//******************************************************************************
-// Use to get the Opt3001 Lux data *********************************************
-//******************************************************************************
-int8_t getTmp117TemperatureData(void)
-{
-    uint16_t tempData;
-    I2C_Master_ReadReg(TMP117_SLAVE_ADDR, 0x00, TMP117_LENGTH);//read to result register
-    CopyArray(ReceiveBuffer, TMP117SlaveBuffer, TMP117_LENGTH);
-    tempData = (TMP117SlaveBuffer[0]<<8)+ TMP117SlaveBuffer[1];
-
-    if(tempData<0x8000) //temp>0 C
-    {
-        return (tempData/(0x7FFF>>8));
-    }
-    else
-    {
-        return -((0xFFFF-tempData)/(0x7FFF>>8));
-    }
-}
-
-//******************************************************************************
-// Use to get the Humidity data *********************************************
-//******************************************************************************
-uint8_t getHdc2080HumidityData(void)
-{
-    uint32_t humidityData;
-    HDC2080SlaveBuffer[0] =0x01;
-    I2C_Master_WriteReg(HDC2080_SLAVE_ADDR, 0x0F, HDC2080SlaveBuffer,HDC2080_LENGTH);//Write to result register
-    __delay_cycles(16000); //1ms
-    __delay_cycles(16000); //1ms
-    __delay_cycles(16000); //1ms
-    I2C_Master_ReadReg(HDC2080_SLAVE_ADDR, 0x02, HDC2080_LENGTH);//Read result register
-    CopyArray(ReceiveBuffer, HDC2080SlaveBuffer, HDC2080_LENGTH);
-    humidityData = HDC2080SlaveBuffer[0];
-    I2C_Master_ReadReg(HDC2080_SLAVE_ADDR, 0x03, HDC2080_LENGTH);//Read result register
-    CopyArray(ReceiveBuffer, HDC2080SlaveBuffer, HDC2080_LENGTH);
-    humidityData += (HDC2080SlaveBuffer[0]<<8);
-    return ((humidityData *100)>>16);
-}
-
-void hdc2080Init()
-{
-
 }

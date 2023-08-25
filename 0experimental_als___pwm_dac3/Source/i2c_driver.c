@@ -108,6 +108,7 @@ void __attribute__ ((interrupt(USCI_B0_VECTOR))) USCI_B0_ISR (void)
     case USCI_I2C_UCRXIFG1:  break;         // Vector 18: RXIFG1
     case USCI_I2C_UCTXIFG1:  break;         // Vector 20: TXIFG1
     case USCI_I2C_UCRXIFG0:                 // Vector 22: RXIFG0
+
         rx_val = UCB0RXBUF;
         if (RXByteCtr)
         {
@@ -134,7 +135,7 @@ void __attribute__ ((interrupt(USCI_B0_VECTOR))) USCI_B0_ISR (void)
               if (RXByteCtr)
                   MasterMode = SWITCH_TO_RX_MODE;   // Need to start receiving now
               else
-                  MasterMode = TX_DATA_MODE;        // Continue to transmision with the data in Transmit Buffer
+                  MasterMode = TX_DATA_MODE;        // Continue to transmit with the data in Transmit Buffer
               break;
 
           case SWITCH_TO_RX_MODE:
